@@ -172,9 +172,15 @@ importers:
       '@fastify/swagger-ui':
         specifier: ^6.1.2
         version: 6.1.2
+      '@fastify/type-provider-typebox':
+        specifier: ^6.3.0
+        version: 6.3.0(ajv-formats@3.0.1)(typebox@1.4.2)
       fastify:
         specifier: ^5.12.5
         version: 5.12.5
+      typebox:
+        specifier: ^1.4.2
+        version: 1.4.2
     devDependencies:
       '@types/node':
         specifier: ^26.6.5
@@ -376,6 +382,12 @@ packages:
 
   '@fastify/swagger@9.9.2':
     resolution: {integrity: sha512-ayxItVgf/1axBvw33lqsA5ns02YMpT1r59G/HCJraRNWWBzvLgN+oiCBPhuzTiN67TvctlCYkG0+40WLKYuusQ==}
+
+  '@fastify/type-provider-typebox@6.3.0':
+    resolution: {integrity: sha512-zsaoyyAdNvkuf2HOMJvf7vykRTFA/1M9J3HC0vHNtFhxNhwL36iDJl/2Tpl0XzMR0f0aATSeDV20ChH720wXYQ==}
+    peerDependencies:
+      ajv-formats: ^3.0.1
+      typebox: ^1.1.14
 
   '@lukeed/ms@2.0.2':
     resolution: {integrity: sha512-9I2Zn6+NJLfaGoz9jN3lpwDgAYvfGeNYdbAIjJOqzs4Tpc+VU3Jqq4IofSUBKajiDS8k9fZIg18/z13mpk1bsA==}
@@ -746,6 +758,9 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
+  typebox@1.4.2:
+    resolution: {integrity: sha512-eSoZzgSIyOKDtTH9MI7XMAxMaiXq7UiSFWarysN1ka66baTLDxAVdQ6WkWn6qDqsJFVrcjzvuP+CqHo9yrlQpg==}
+
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
     engines: {node: '>=16.20.0'}
@@ -899,6 +914,11 @@ snapshots:
       yaml: 2.9.1
     transitivePeerDependencies:
       - supports-color
+
+  '@fastify/type-provider-typebox@6.3.0(ajv-formats@3.0.1)(typebox@1.4.2)':
+    dependencies:
+      ajv-formats: 3.0.1
+      typebox: 1.4.2
 
   '@lukeed/ms@2.0.2': {}
 
@@ -1221,6 +1241,8 @@ snapshots:
       esbuild: 0.28.2
     optionalDependencies:
       fsevents: 2.3.3
+
+  typebox@1.4.2: {}
 
   typescript@7.0.2:
     optionalDependencies:

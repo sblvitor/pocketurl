@@ -1,10 +1,11 @@
 import Fastify from 'fastify'
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
+import { Type, type TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 
 const app = Fastify({
   logger: true
-})
+}).withTypeProvider<TypeBoxTypeProvider>()
 
 await app.register(swagger, {
   openapi: {
@@ -23,19 +24,11 @@ app.get("/health", async () => ({ status: "ok" }))
 // Armazenamento temporário
 const links = new Map<string, string>()
 
-type CreateLinkBody = { url: string }
-const createLinkSchema = {
-  body: {
-    type: 'object',
-    required: ['url'],
-    additionalProperties: false,
-    properties: {
-      url: { type: 'string', format: 'uri', pattern: '^https?://' },
-    }
-  }
-}
+const CreateLinkBody = Type.Object({
+  url: Type.String({ format: 'uri', pattern: '^https?://' }),
+}, { additionalProperties: false })
 
-app.post<{ Body: CreateLinkBody }>('/links', { schema: createLinkSchema }, async (request, reply) => {
+app.post('/links', { schema: { body: CreateLinkBody } }, async (request, reply) => {
   const { url } = request.body
   const code = Math.random().toString(36).slice(2, 8)
   links.set(code, url)
@@ -44,8 +37,12 @@ app.post<{ Body: CreateLinkBody }>('/links', { schema: createLinkSchema }, async
   return { code, url }
 })
 
-app.get('/:code', async (request, reply) => {
-  const { code } = request.params as { code: string }
+const RedirectParam = Type.Object({
+  code: Type.String()
+})
+
+app.get('/:code', { schema: { params: RedirectParam } }, async (request, reply) => {
+  const { code } = request.params
   const url = links.get(code)
 
   if (!url) {
