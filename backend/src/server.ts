@@ -23,8 +23,20 @@ app.get("/health", async () => ({ status: "ok" }))
 // Armazenamento temporário
 const links = new Map<string, string>()
 
-app.post('/links', async (request, reply) => {
-  const { url } = request.body as { url: string }
+type CreateLinkBody = { url: string }
+const createLinkSchema = {
+  body: {
+    type: 'object',
+    required: ['url'],
+    additionalProperties: false,
+    properties: {
+      url: { type: 'string', format: 'uri', pattern: '^https?://' },
+    }
+  }
+}
+
+app.post<{ Body: CreateLinkBody }>('/links', { schema: createLinkSchema }, async (request, reply) => {
+  const { url } = request.body
   const code = Math.random().toString(36).slice(2, 8)
   links.set(code, url)
 
