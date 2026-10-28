@@ -5,7 +5,7 @@ import { Type, type TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { DatabaseError } from 'pg'
 import { db, pool } from './db.js'
 import { links } from './db/schema.js'
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 
 const app = Fastify({
   logger: true
@@ -58,10 +58,12 @@ const RedirectParam = Type.Object({
 
 app.get('/:code', { schema: { params: RedirectParam } }, async (request, reply) => {
   const { code } = request.params
+
   const [link] = await db
-    .select({ url: links.url })
-    .from(links)
+    .update(links)
+    .set({ clicks: sql`${links.clicks} + 1` })
     .where(eq(links.code, code))
+    .returning({ url: links.url })
 
   if (!link) {
     reply.code(404)

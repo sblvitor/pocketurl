@@ -1,0 +1,47 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "1d782f89-4e31-4a6f-9f0b-19f0af8e51ec",
+  "prevIds": [
+    "ad95bb21-eb0e-4f13-b5bb-89f93e869d4a"
+  ],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "links",
+        "clicks"
+      ],
+      "writes": [
+        "s|col|public.links.clicks",
+        "n|col|public.links.clicks",
+        "e|col|public.links.clicks"
+      ],
+      "reads": [
+        "n|tbl|public.links",
+        "n|sch|public"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "links",
+        "name": "clicks",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    }
+  ]
+}
