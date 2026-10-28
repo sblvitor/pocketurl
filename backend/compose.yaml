@@ -1,0 +1,17 @@
+name: pocketurl
+
+services:
+  db:
+    image: postgres:18
+    container_name: pocketurl-db
+    environment:
+      POSTGRES_PASSWORD: pocketurl
+      POSTGRES_DB: pocketurl
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+
+volumes:
+  pgdata:
+    name: pocketurl-pg
