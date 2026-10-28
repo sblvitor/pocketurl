@@ -3,7 +3,9 @@ import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
 import { Type, type TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { DatabaseError } from 'pg'
-import { pool } from './db.js'
+import { db, pool } from './db.js'
+import { links } from './db/schema.js'
+import { eq } from 'drizzle-orm'
 
 const app = Fastify({
   logger: true
@@ -33,14 +35,15 @@ app.post('/links', { schema: { body: CreateLinkBody } }, async (request, reply) 
   const code = request.body.code ?? Math.random().toString(36).slice(2, 8)
 
   try {
-    const result = await pool.query<{ code: string, url: string }>(
-      'INSERT INTO links (code, url) VALUES ($1, $2) RETURNING code, url',
-      [code, url]
-    )
+    const [link] = await db
+      .insert(links)
+      .values({ code, url })
+      .returning({ code: links.code, url: links.url })
+
     reply.code(201)
-    return result.rows[0]
+    return link
   } catch (err) {
-    if (err instanceof DatabaseError && err.code === '23505') {
+    if (err instanceof Error && err.cause instanceof DatabaseError && err.cause.code === '23505') {
       reply.code(409)
       return { message: 'Esse código já está em uso' }
     }
@@ -55,10 +58,10 @@ const RedirectParam = Type.Object({
 
 app.get('/:code', { schema: { params: RedirectParam } }, async (request, reply) => {
   const { code } = request.params
-  const result = await pool.query<{ url: string }>(
-    'SELECT url FROM links WHERE code = $1', [code]
-  )
-  const link = result.rows[0]
+  const [link] = await db
+    .select({ url: links.url })
+    .from(links)
+    .where(eq(links.code, code))
 
   if (!link) {
     reply.code(404)
